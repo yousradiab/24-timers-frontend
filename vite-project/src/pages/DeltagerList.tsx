@@ -1,15 +1,93 @@
 import { useState, useEffect } from "react";
-import { getDeltagerList, Deltager } from "../api/api";
+import { getDeltagerList, Deltager, deleteDeltager } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
 export default function DeltagerList() {
   const [deltagerlist, setDeltagerlist] = useState<Deltager[]>([]);
+  const [filteredDeltagerList, setFilteredDeltagerList] = useState<Deltager[]>(
+    []
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCriteria, setFilterCriteria] = useState({
+    kon: "",
+    aldersklasse: "",
+    klub: "",
+    disciplin: "",
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     getDeltagerList().then((data) => {
       console.log(data);
       setDeltagerlist(data);
+      setFilteredDeltagerList(data);
     });
   }, []);
+
+  useEffect(() => {
+    let filteredList = deltagerlist;
+
+    if (searchTerm) {
+      filteredList = filteredList.filter((deltager) =>
+        deltager.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filterCriteria.kon) {
+      filteredList = filteredList.filter(
+        (deltager) => deltager.kon === filterCriteria.kon
+      );
+    }
+
+    if (filterCriteria.aldersklasse) {
+      filteredList = filteredList.filter(
+        (deltager) =>
+          getAldersklasse(deltager.alder) === filterCriteria.aldersklasse
+      );
+    }
+
+    if (filterCriteria.klub) {
+      filteredList = filteredList.filter(
+        (deltager) => deltager.klub === filterCriteria.klub
+      );
+    }
+
+    if (filterCriteria.disciplin) {
+      filteredList = filteredList.filter((deltager) =>
+        deltager.discipliner.some((d) => d.navn === filterCriteria.disciplin)
+      );
+    }
+
+    setFilteredDeltagerList(filteredList);
+  }, [searchTerm, filterCriteria, deltagerlist]);
+
+  const getAldersklasse = (alder) => {
+    if (alder < 18) return "Under 18";
+    if (alder < 30) return "18-29";
+    if (alder < 40) return "30-39";
+    return "40+";
+  };
+
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Er du sikker på, at du vil slette denne deltager?")) {
+      try {
+        await deleteDeltager(id);
+        setDeltagerlist(deltagerlist.filter((deltager) => deltager.id !== id));
+      } catch (error) {
+        console.error("Failed to delete deltager:", error);
+        alert("Failed to delete deltager. Check the console for more details.");
+      }
+    }
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilterCriteria((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -17,6 +95,59 @@ export default function DeltagerList() {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Deltager oversigt
         </h1>
+        <div className="mb-4 flex justify-between">
+          <input
+            type="text"
+            placeholder="Søg efter navn"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          <select
+            name="kon"
+            value={filterCriteria.kon}
+            onChange={handleFilterChange}
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Filter efter køn</option>
+            <option value="M">Mand</option>
+            <option value="K">Kvinde</option>
+          </select>
+          <select
+            name="aldersklasse"
+            value={filterCriteria.aldersklasse}
+            onChange={handleFilterChange}
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Filter efter aldersklasse</option>
+            <option value="Under 18">Under 18</option>
+            <option value="18-29">18-29</option>
+            <option value="30-39">30-39</option>
+            <option value="40+">40+</option>
+          </select>
+          <select
+            name="klub"
+            value={filterCriteria.klub}
+            onChange={handleFilterChange}
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Filter efter klub</option>
+            {/* Assuming you have a list of clubs */}
+            <option value="Klub1">Klub1</option>
+            <option value="Klub2">Klub2</option>
+          </select>
+          <select
+            name="disciplin"
+            value={filterCriteria.disciplin}
+            onChange={handleFilterChange}
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option value="">Filter efter disciplin</option>
+            {/* Assuming you have a list of disciplines */}
+            <option value="100m løb">100m løb</option>
+            <option value="Spydkast">Spydkast</option>
+          </select>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-gray-800 text-white">
@@ -39,10 +170,13 @@ export default function DeltagerList() {
                 <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
                   Resultater
                 </th>
+                <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  Handlinger
+                </th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {deltagerlist.map((deltager) => (
+              {filteredDeltagerList.map((deltager) => (
                 <tr key={deltager.id} className="border-t border-gray-200">
                   <td className="py-3 px-4">{deltager.name}</td>
                   <td className="py-3 px-4">{deltager.alder}</td>
@@ -72,6 +206,20 @@ export default function DeltagerList() {
                         </li>
                       ))}
                     </ul>
+                  </td>
+                  <td className="py-3 px-4 flex space-x-2">
+                    <button
+                      onClick={() => navigate(`/deltager/${deltager.id}/edit`)}
+                      className="text-indigo-600 font-bold hover:underline text-sm"
+                    >
+                      Rediger
+                    </button>
+                    <button
+                      onClick={() => handleDelete(deltager.id)}
+                      className="text-red-600 font-bold hover:underline text-sm"
+                    >
+                      Slet
+                    </button>
                   </td>
                 </tr>
               ))}
