@@ -1,6 +1,8 @@
+import { makeOptions, handleHttpErrors } from "./fetchUtils";
+
 const endpoint = "http://localhost:8080";
 const deltagerURL = `${endpoint}/deltager`;
-const hotelbyId = `${endpoint}/hotel`;
+const createDeltagerURL = `${endpoint}/createdeltager`;
 
 export interface Disciplin {
   id: number;
@@ -30,9 +32,37 @@ async function getDeltagerList() {
   return response.json();
 }
 
-async function getHotelById(id: number) {
-  const response = await fetch(`${hotelbyId}/${id}`);
+async function getDeltagerById(id: number) {
+  const response = await fetch(`${deltagerURL}/${id}`);
   return response.json();
 }
+async function createDeltager(deltager: Deltager) {
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(deltager),
+  };
+  try {
+    const response = await fetch(createDeltagerURL, options);
+    if (!response.ok) {
+      const errorDetail = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, details: ${JSON.stringify(
+          errorDetail
+        )}`
+      );
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error creating deltager:", error);
+    throw error;
+  }
+}
+async function updateDeltager(deltager: Deltager) {
+  const options = makeOptions("PUT", deltager);
+  return fetch(`${deltagerURL}/${deltager.id}`, options).then(handleHttpErrors);
+}
 
-export { getDeltagerList, getHotelById };
+export { getDeltagerList, getDeltagerById, createDeltager, updateDeltager };

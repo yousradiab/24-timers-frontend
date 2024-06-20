@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { getDeltagerList, Deltager } from "../api/api";
 
 export default function DeltagerList() {
-  const [deltagerlist, setdeltagerlist] = useState<Deltager[]>([]);
+  const [deltagerlist, setDeltagerlist] = useState<Deltager[]>([]);
 
   useEffect(() => {
     getDeltagerList().then((data) => {
       console.log(data);
-      setdeltagerlist(data);
+      setDeltagerlist(data);
     });
   }, []);
 
@@ -50,8 +50,11 @@ export default function DeltagerList() {
                   <td className="py-3 px-4">{deltager.klub}</td>
                   <td className="py-3 px-4">
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {deltager.discipliner.map((disciplin) => (
-                        <li key={disciplin.id} className="text-gray-700">
+                      {deltager.discipliner.map((disciplin, index) => (
+                        <li
+                          key={`${disciplin.id}-${index}`}
+                          className="text-gray-700"
+                        >
                           {disciplin.navn} - {disciplin.resultatType}
                         </li>
                       ))}
@@ -59,8 +62,11 @@ export default function DeltagerList() {
                   </td>
                   <td className="py-3 px-4">
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {deltager.resultater.map((resultat) => (
-                        <li key={resultat.id} className="text-gray-700">
+                      {deltager.resultater.map((resultat, index) => (
+                        <li
+                          key={`${resultat.id}-${index}`}
+                          className="text-gray-700"
+                        >
                           {resultat.formattedResult} (Dato:{" "}
                           {new Date(resultat.dato).toLocaleDateString()})
                         </li>

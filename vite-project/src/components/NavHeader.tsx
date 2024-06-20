@@ -11,7 +11,7 @@ export default function NavHeader() {
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-0 py-4 flex justify-between items-center">
-        <a href="#" className="text-2xl font-bold text-gray-800"></a>
+        <span className="text-2xl font-bold text-gray-800">My App</span>
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
@@ -40,35 +40,40 @@ export default function NavHeader() {
         } md:block`}
       >
         <div className="md:flex space-x-6">
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            <ul>
-              <li>{<NavLink to="/">Home </NavLink>}</li>
-            </ul>
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            <ul>
-              <li>{<NavLink to="/deltager">Deltager Oversigt </NavLink>}</li>
-              <li>{<NavLink to="hotel">Hotel</NavLink>}</li>
-            </ul>
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Services
-          </a>
-          <a
-            href="#"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Contact
-          </a>
+          <ul>
+            <li>
+              <NavLink
+                to="/"
+                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/deltager"
+                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Deltager Oversigt
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/Admin"
+                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Admin
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/contact"
+                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Contact
+              </NavLink>
+            </li>
+          </ul>
         </div>
       </nav>
     </header>
