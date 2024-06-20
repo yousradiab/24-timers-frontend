@@ -40,40 +40,42 @@ export default function NavHeader() {
         } md:block`}
       >
         <div className="md:flex space-x-6">
-          <ul>
-            <li>
-              <NavLink
-                to="/"
-                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/deltager"
-                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Deltager Oversigt
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/Admin"
-                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Admin
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/contact"
-                className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Contact
-              </NavLink>
-            </li>
-          </ul>
+          <NavLink
+            to="/"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/deltager"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Deltager Oversigt
+          </NavLink>
+          <NavLink
+            to="/admin"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Admin
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Contact
+          </NavLink>
+          <NavLink
+            to="/registerResultForm"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Register Result
+          </NavLink>
+          <NavLink
+            to="/register-multiple-results"
+            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Register Multiple Results
+          </NavLink>
         </div>
       </nav>
     </header>

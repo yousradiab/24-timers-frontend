@@ -1,3 +1,5 @@
+import { makeOptions } from "./fetchUtils";
+
 const endpoint = "http://localhost:8080";
 const deltagerURL = `${endpoint}/deltager`;
 const createDeltagerURL = `${endpoint}/createdeltager`;
@@ -16,6 +18,7 @@ export interface Resultat {
   dato: Date;
   resultatVaerdi: string;
   formattedResult: string;
+  disciplin: Disciplin;
 }
 
 export interface Deltager {
@@ -115,10 +118,41 @@ async function deleteDeltager(id: number): Promise<void> {
     );
   }
 }
+
+async function registerSingleResult(result: Resultat) {
+  const options = makeOptions("POST", result);
+  const response = await fetch(`${endpoint}/resultat/single`, options);
+  if (!response.ok) {
+    const errorDetail = await response.json();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${JSON.stringify(
+        errorDetail
+      )}`
+    );
+  }
+  return response.json();
+}
+
+async function registerMultipleResults(results: Resultat[]) {
+  const options = makeOptions("POST", results);
+  const response = await fetch(`${endpoint}/resultat/multiple`, options);
+  if (!response.ok) {
+    const errorDetail = await response.json();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${JSON.stringify(
+        errorDetail
+      )}`
+    );
+  }
+  return response.json();
+}
+
 export {
   getDeltagerList,
   getDeltagerById,
   createDeltager,
   updateDeltager,
   deleteDeltager,
+  registerSingleResult,
+  registerMultipleResults,
 };

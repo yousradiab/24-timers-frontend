@@ -18,7 +18,7 @@ export default function DeltagerList() {
 
   useEffect(() => {
     getDeltagerList().then((data) => {
-      console.log(data);
+      console.log("Fetched data:", data);
       setDeltagerlist(data);
       setFilteredDeltagerList(data);
     });
@@ -33,10 +33,12 @@ export default function DeltagerList() {
       );
     }
 
+    console.log("Filtering by gender:", filterCriteria.kon);
     if (filterCriteria.kon) {
-      filteredList = filteredList.filter(
-        (deltager) => deltager.kon === filterCriteria.kon
-      );
+      filteredList = filteredList.filter((deltager) => {
+        console.log("Deltager gender:", deltager.kon);
+        return deltager.kon === filterCriteria.kon;
+      });
     }
 
     if (filterCriteria.aldersklasse) {
@@ -58,6 +60,7 @@ export default function DeltagerList() {
       );
     }
 
+    console.log("Filtered list:", filteredList);
     setFilteredDeltagerList(filteredList);
   }, [searchTerm, filterCriteria, deltagerlist]);
 
@@ -95,19 +98,19 @@ export default function DeltagerList() {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Deltager oversigt
         </h1>
-        <div className="mb-4 flex justify-between">
+        <div className="mb-4 flex flex-wrap justify-between">
           <input
             type="text"
             placeholder="Søg efter navn"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full md:w-auto py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           />
           <select
             name="kon"
             value={filterCriteria.kon}
             onChange={handleFilterChange}
-            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           >
             <option value="">Filter efter køn</option>
             <option value="M">Mand</option>
@@ -117,7 +120,7 @@ export default function DeltagerList() {
             name="aldersklasse"
             value={filterCriteria.aldersklasse}
             onChange={handleFilterChange}
-            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           >
             <option value="">Filter efter aldersklasse</option>
             <option value="Under 18">Under 18</option>
@@ -129,12 +132,13 @@ export default function DeltagerList() {
             name="klub"
             value={filterCriteria.klub}
             onChange={handleFilterChange}
-            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           >
             <option value="">Filter efter klub</option>
             {/* Assuming you have a list of clubs */}
             <option value="Klub1">Klub1</option>
             <option value="Klub2">Klub2</option>
+            <option value="Klub3">Klub3</option>
           </select>
           <select
             name="disciplin"
@@ -146,6 +150,9 @@ export default function DeltagerList() {
             {/* Assuming you have a list of disciplines */}
             <option value="100m løb">100m løb</option>
             <option value="Spydkast">Spydkast</option>
+            <option value="Diskoskast">Diskoskast</option>
+            <option value="Trespring">Trespring</option>
+            <option value="Højdespring">Højdespring</option>
           </select>
         </div>
         <div className="overflow-x-auto">
@@ -176,7 +183,7 @@ export default function DeltagerList() {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-              {filteredDeltagerList.map((deltager) => (
+              {filteredDeltagerList?.map((deltager) => (
                 <tr key={deltager.id} className="border-t border-gray-200">
                   <td className="py-3 px-4">{deltager.name}</td>
                   <td className="py-3 px-4">{deltager.alder}</td>
@@ -184,7 +191,7 @@ export default function DeltagerList() {
                   <td className="py-3 px-4">{deltager.klub}</td>
                   <td className="py-3 px-4">
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {deltager.discipliner.map((disciplin, index) => (
+                      {deltager.discipliner?.map((disciplin, index) => (
                         <li
                           key={`${disciplin.id}-${index}`}
                           className="text-gray-700"
@@ -196,7 +203,7 @@ export default function DeltagerList() {
                   </td>
                   <td className="py-3 px-4">
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {deltager.resultater.map((resultat, index) => (
+                      {deltager.resultater?.map((resultat, index) => (
                         <li
                           key={`${resultat.id}-${index}`}
                           className="text-gray-700"
