@@ -11,7 +11,7 @@ export default function NavHeader() {
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-0 py-4 flex justify-between items-center">
-        <span className="text-2xl font-bold text-gray-800">My App</span>
+        <span className="text-2xl font-bold text-gray-800">Atletikstævne</span>
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
@@ -41,12 +41,6 @@ export default function NavHeader() {
       >
         <div className="md:flex space-x-6">
           <NavLink
-            to="/"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Home
-          </NavLink>
-          <NavLink
             to="/deltager"
             className="block px-4 py-2 text-gray-600 hover:text-gray-800"
           >
@@ -59,22 +53,10 @@ export default function NavHeader() {
             Admin
           </NavLink>
           <NavLink
-            to="/contact"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Contact
-          </NavLink>
-          <NavLink
             to="/registerResultForm"
             className="block px-4 py-2 text-gray-600 hover:text-gray-800"
           >
             Register Result
-          </NavLink>
-          <NavLink
-            to="/register-multiple-results"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Register Multiple Results
           </NavLink>
         </div>
       </nav>

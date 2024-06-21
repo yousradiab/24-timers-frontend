@@ -53,31 +53,39 @@ export function RegisterResultForm() {
     e.preventDefault();
     try {
       if (isMultiple) {
-        // Convert string IDs to integers for multiple results
+        // Ensure all results have valid deltager and disciplin objects
         const formattedMultipleResults = multipleResults.map((result) => ({
           ...result,
           deltager: {
             ...result.deltager,
-            id: parseInt(result.deltager.id.toString(), 10),
+            id: result.deltager?.id
+              ? parseInt(result.deltager.id.toString(), 10)
+              : 0,
           },
           disciplin: {
             ...result.disciplin,
-            id: parseInt(result.disciplin.id.toString(), 10),
+            id: result.disciplin?.id
+              ? parseInt(result.disciplin.id.toString(), 10)
+              : 0,
           },
         }));
         console.log("Registering multiple results:", formattedMultipleResults);
         await registerMultipleResults(formattedMultipleResults);
       } else {
-        // Convert string IDs to integers for single result
+        // Ensure the single result has valid deltager and disciplin objects
         const formattedSingleResult = {
           ...singleResult,
           deltager: {
             ...singleResult.deltager,
-            id: parseInt(singleResult.deltager.id.toString(), 10),
+            id: singleResult.deltager?.id
+              ? parseInt(singleResult.deltager.id.toString(), 10)
+              : 0,
           },
           disciplin: {
             ...singleResult.disciplin,
-            id: parseInt(singleResult.disciplin.id.toString(), 10),
+            id: singleResult.disciplin?.id
+              ? parseInt(singleResult.disciplin.id.toString(), 10)
+              : 0,
           },
         };
         console.log("Registering single result:", formattedSingleResult);
@@ -86,9 +94,17 @@ export function RegisterResultForm() {
       navigate("/deltager");
     } catch (error) {
       console.error("Failed to register result(s):", error);
-      alert(
-        "Failed to register result(s). Check the console for more details."
-      );
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        alert(`Failed to register result(s): ${error.response.data}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        alert("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        alert(`Failed to register result(s): ${error.message}`);
+      }
     }
   };
 

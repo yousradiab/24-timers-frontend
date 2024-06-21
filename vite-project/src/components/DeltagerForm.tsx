@@ -138,6 +138,7 @@ export function DeltagerForm() {
             >
               Medlemsklub
             </label>
+            Vælg mellem: Klub1, Klub2, Klub3
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="klub"
@@ -147,9 +148,14 @@ export function DeltagerForm() {
               onChange={handleChange}
             />
           </div>
+
           <div className="mb-4">
             <h3 className="text-md font-semibold mb-1 text-gray-700">
-              Discipliner
+              Discipliner{" "}
+              <span className="text-sm">
+                ( Vælg mellem: 100m løb, Spydkast, Diskoskast, Trespring,
+                Højdespring)
+              </span>
             </h3>
             {deltager.discipliner.map((d, index) => (
               <div key={index} className="flex items-center">
@@ -166,7 +172,9 @@ export function DeltagerForm() {
               placeholder="Disciplin navn"
               value={disciplin.navn}
               onChange={handleDisciplinChange}
-            />
+            />{" "}
+            resultat typer: 100m løb (tid), Spydkast (afstand), Diskoskast
+            (afstand), Trespring (point), Højdespring (tid).
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
               id="disciplinResultatType"
