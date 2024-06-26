@@ -135,7 +135,6 @@ export default function DeltagerList() {
             className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           >
             <option value="">Filter efter klub</option>
-            {/* Assuming you have a list of clubs */}
             <option value="Klub1">Klub1</option>
             <option value="Klub2">Klub2</option>
             <option value="Klub3">Klub3</option>
@@ -147,7 +146,6 @@ export default function DeltagerList() {
             className="ml-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           >
             <option value="">Filter efter disciplin</option>
-            {/* Assuming you have a list of disciplines */}
             <option value="100m løb">100m løb</option>
             <option value="Spydkast">Spydkast</option>
             <option value="Diskoskast">Diskoskast</option>
@@ -208,8 +206,9 @@ export default function DeltagerList() {
                           key={`${resultat.id}-${index}`}
                           className="text-gray-700"
                         >
-                          {resultat.formattedResult} (Dato:{" "}
-                          {new Date(resultat.dato).toLocaleDateString()})
+                          {resultat.formattedResult}
+                          {"   "}
+                          {resultat.resultatType}
                         </li>
                       ))}
                     </ul>
