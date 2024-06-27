@@ -207,7 +207,6 @@ export default function DeltagerList() {
                           className="text-gray-700"
                         >
                           {resultat.formattedResult}
-                          {"   "}
                           {resultat.resultatType}
                         </li>
                       ))}

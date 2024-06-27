@@ -12,7 +12,6 @@ export interface Disciplin {
 
 export interface Resultat {
   id: number;
-  resultatType: string | undefined;
   resultatVaerdi: string | undefined;
   dato: string;
   deltager: {
@@ -43,6 +42,11 @@ export interface FormattedResult {
 }
 async function getDeltagerList() {
   const response = await fetch(deltagerURL);
+  return response.json();
+}
+
+async function getResults() {
+  const response = await fetch(`${endpoint}/resultat`);
   return response.json();
 }
 
@@ -168,4 +172,5 @@ export {
   deleteDeltager,
   registerSingleResult,
   registerMultipleResults,
+  getResults,
 };

@@ -25,7 +25,7 @@ export function DeltagerForm() {
     console.log("Component mounted");
     console.log("Initial deltager state:", deltager);
     console.log("Initial disciplin state:", disciplin);
-  }, []);
+  }, [deltager, disciplin]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
