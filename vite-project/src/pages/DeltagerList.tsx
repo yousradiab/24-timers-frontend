@@ -138,6 +138,8 @@ export default function DeltagerList() {
             <option value="Klub1">Klub1</option>
             <option value="Klub2">Klub2</option>
             <option value="Klub3">Klub3</option>
+            <option value="Klub4">Klub4</option>
+            <option value="Klub5">Klub5</option>
           </select>
           <select
             name="disciplin"
@@ -201,12 +203,12 @@ export default function DeltagerList() {
                   </td>
                   <td className="py-3 px-4">
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {deltager.resultater?.map((resultat, index) => (
+                      {deltager.resultater.map((resultat, index) => (
                         <li
                           key={`${resultat.id}-${index}`}
                           className="text-gray-700"
                         >
-                          {resultat.formattedResult}
+                          {resultat.formattedResult} {""}
                           {resultat.resultatType}
                         </li>
                       ))}
@@ -219,6 +221,13 @@ export default function DeltagerList() {
                     >
                       Rediger
                     </button>
+                    <button
+                      onClick={() => navigate(`/deltager/${deltager.id}`)}
+                      className="text-indigo-600 font-bold hover:underline text-sm"
+                    >
+                      Detaljer
+                    </button>
+
                     <button
                       onClick={() => handleDelete(deltager.id)}
                       className="text-red-600 font-bold hover:underline text-sm"

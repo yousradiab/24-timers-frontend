@@ -52,12 +52,6 @@ export default function NavHeader() {
           >
             Admin
           </NavLink>
-          <NavLink
-            to="/registerResultForm"
-            className="block px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Register Result
-          </NavLink>
         </div>
       </nav>
     </header>

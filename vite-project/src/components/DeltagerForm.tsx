@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Deltager, createDeltager } from "../api/api";
 
 export function DeltagerForm() {
+  // Initialiserer deltager state med useState hook
   const [deltager, setDeltager] = useState<Deltager>({
     id: 0,
     name: "",
@@ -13,6 +14,7 @@ export function DeltagerForm() {
     resultater: [],
   });
 
+  // Initialiserer disciplin state med useState hook
   const [disciplin, setDisciplin] = useState({
     id: 0,
     navn: "",
@@ -21,12 +23,14 @@ export function DeltagerForm() {
 
   const navigate = useNavigate();
 
+  // useEffect hook til at logge initial state, når komponenten monteres
   useEffect(() => {
     console.log("Component mounted");
     console.log("Initial deltager state:", deltager);
     console.log("Initial disciplin state:", disciplin);
   }, [deltager, disciplin]);
 
+  // Handler til at opdatere deltager state ved input ændring
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDeltager((prevState) => ({
@@ -35,6 +39,7 @@ export function DeltagerForm() {
     }));
   };
 
+  // Handler til at opdatere disciplin state ved input ændring
   const handleDisciplinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDisciplin((prevState) => ({
@@ -43,6 +48,7 @@ export function DeltagerForm() {
     }));
   };
 
+  // Funktion til at tilføje en ny disciplin til deltageren
   const addDisciplin = () => {
     console.log("Adding disciplin:", disciplin);
     if (disciplin.navn && disciplin.resultatType) {
@@ -61,6 +67,7 @@ export function DeltagerForm() {
     setDisciplin({ id: 0, navn: "", resultatType: "" });
   };
 
+  // Handler til at sende deltager data til serveren ved form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -83,6 +90,7 @@ export function DeltagerForm() {
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         >
+          {/* Input felt for deltagerens navn */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -99,6 +107,8 @@ export function DeltagerForm() {
               onChange={handleChange}
             />
           </div>
+
+          {/* Input felt for deltagerens køn */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -115,6 +125,8 @@ export function DeltagerForm() {
               onChange={handleChange}
             />
           </div>
+
+          {/* Input felt for deltagerens alder */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -131,6 +143,8 @@ export function DeltagerForm() {
               onChange={handleChange}
             />
           </div>
+
+          {/* Input felt for deltagerens medlemsklub */}
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -138,7 +152,7 @@ export function DeltagerForm() {
             >
               Medlemsklub
             </label>
-            Vælg mellem: Klub1, Klub2, Klub3
+            Vælg mellem: Klub1, Klub2, Klub3, Klub4, Klub5
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="klub"
@@ -149,6 +163,7 @@ export function DeltagerForm() {
             />
           </div>
 
+          {/* Sektion for at tilføje discipliner til deltageren */}
           <div className="mb-4">
             <h3 className="text-md font-semibold mb-1 text-gray-700">
               Discipliner{" "}
@@ -157,6 +172,7 @@ export function DeltagerForm() {
                 Højdespring)
               </span>
             </h3>
+            {/* Viser de allerede tilføjede discipliner */}
             {deltager.discipliner.map((d, index) => (
               <div key={index} className="flex items-center">
                 <p className="mr-2">
@@ -164,6 +180,7 @@ export function DeltagerForm() {
                 </p>
               </div>
             ))}
+            {/* Input felt for disciplin navn */}
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
               id="disciplinNavn"
@@ -173,8 +190,9 @@ export function DeltagerForm() {
               value={disciplin.navn}
               onChange={handleDisciplinChange}
             />{" "}
-            resultat typer: 100m løb (tid), Spydkast (afstand), Diskoskast
-            (afstand), Trespring (point), Højdespring (tid).
+            resultat typer: 100m løb (Tid), Spydkast (Afstand), Diskoskast
+            (Afstand), Trespring (Point), Højdespring (Tid).
+            {/* Input felt for disciplin resultat type */}
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
               id="disciplinResultatType"
@@ -184,6 +202,7 @@ export function DeltagerForm() {
               value={disciplin.resultatType}
               onChange={handleDisciplinChange}
             />
+            {/* Knappen til at tilføje disciplin til deltageren */}
             <button
               type="button"
               onClick={addDisciplin}
@@ -192,6 +211,8 @@ export function DeltagerForm() {
               Tilføj Disciplin
             </button>
           </div>
+
+          {/* Knappen til at indsende formen */}
           <div className="flex items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

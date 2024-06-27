@@ -43,7 +43,7 @@ export default function DeltagerDetails() {
           <ul className="list-disc list-inside text-sm space-y-1">
             {deltager.resultater.map((resultat) => (
               <li key={resultat.id} className="text-gray-700">
-                {resultat.formattedResult} (Dato:{" "}
+                {resultat.formattedResult} {resultat.resultatType} (Dato:{" "}
                 {new Date(resultat.dato).toLocaleDateString()})
               </li>
             ))}
