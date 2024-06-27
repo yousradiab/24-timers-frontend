@@ -3,10 +3,13 @@ import { getDeltagerList, Deltager, deleteDeltager } from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function DeltagerList() {
+  // State til at gemme listen af deltagere og den filtrerede liste af deltagere
   const [deltagerlist, setDeltagerlist] = useState<Deltager[]>([]);
   const [filteredDeltagerList, setFilteredDeltagerList] = useState<Deltager[]>(
     []
   );
+
+  // State til at gemme søgetermen og filterkriterier
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCriteria, setFilterCriteria] = useState({
     kon: "",
@@ -14,8 +17,10 @@ export default function DeltagerList() {
     klub: "",
     disciplin: "",
   });
+
   const navigate = useNavigate();
 
+  // useEffect til at hente deltagerlisten
   useEffect(() => {
     getDeltagerList().then((data) => {
       console.log("Fetched data:", data);
@@ -24,15 +29,18 @@ export default function DeltagerList() {
     });
   }, []);
 
+  // useEffect til at filtrere deltagerlisten baseret på søgeterm og filterkriterier
   useEffect(() => {
     let filteredList = deltagerlist;
 
+    // Filtrering baseret på søgeterm (navn)
     if (searchTerm) {
       filteredList = filteredList.filter((deltager) =>
         deltager.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
+    // Filtrering baseret på køn
     console.log("Filtering by gender:", filterCriteria.kon);
     if (filterCriteria.kon) {
       filteredList = filteredList.filter((deltager) => {
@@ -41,6 +49,7 @@ export default function DeltagerList() {
       });
     }
 
+    // Filtrering baseret på aldersklasse
     if (filterCriteria.aldersklasse) {
       filteredList = filteredList.filter(
         (deltager) =>
@@ -48,12 +57,14 @@ export default function DeltagerList() {
       );
     }
 
+    // Filtrering baseret på klub
     if (filterCriteria.klub) {
       filteredList = filteredList.filter(
         (deltager) => deltager.klub === filterCriteria.klub
       );
     }
 
+    // Filtrering baseret på disciplin
     if (filterCriteria.disciplin) {
       filteredList = filteredList.filter((deltager) =>
         deltager.discipliner.some((d) => d.navn === filterCriteria.disciplin)
@@ -64,13 +75,15 @@ export default function DeltagerList() {
     setFilteredDeltagerList(filteredList);
   }, [searchTerm, filterCriteria, deltagerlist]);
 
-  const getAldersklasse = (alder) => {
+  // Funktion til at bestemme aldersklassen baseret på alder
+  const getAldersklasse = (alder: number) => {
     if (alder < 18) return "Under 18";
     if (alder < 30) return "18-29";
     if (alder < 40) return "30-39";
     return "40+";
   };
 
+  // Funktion til at håndtere sletning af deltager
   const handleDelete = async (id: number) => {
     if (window.confirm("Er du sikker på, at du vil slette denne deltager?")) {
       try {
@@ -83,11 +96,13 @@ export default function DeltagerList() {
     }
   };
 
+  // Funktion til at håndtere ændringer i filterkriterier
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilterCriteria((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  // Funktion til at håndtere ændringer i søgetermen
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -98,7 +113,9 @@ export default function DeltagerList() {
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Deltager oversigt
         </h1>
+        {/* Søge- og filtersektion */}
         <div className="mb-4 flex flex-wrap justify-between">
+          {/* Søgefelt */}
           <input
             type="text"
             placeholder="Søg efter navn"
@@ -106,6 +123,7 @@ export default function DeltagerList() {
             onChange={handleSearchChange}
             className="shadow appearance-none border rounded w-full md:w-auto py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 md:mb-0"
           />
+          {/* Filter efter køn */}
           <select
             name="kon"
             value={filterCriteria.kon}
@@ -116,6 +134,7 @@ export default function DeltagerList() {
             <option value="M">Mand</option>
             <option value="K">Kvinde</option>
           </select>
+          {/* Filter efter aldersklasse */}
           <select
             name="aldersklasse"
             value={filterCriteria.aldersklasse}
@@ -128,6 +147,7 @@ export default function DeltagerList() {
             <option value="30-39">30-39</option>
             <option value="40+">40+</option>
           </select>
+          {/* Filter efter klub */}
           <select
             name="klub"
             value={filterCriteria.klub}
@@ -141,6 +161,7 @@ export default function DeltagerList() {
             <option value="Klub4">Klub4</option>
             <option value="Klub5">Klub5</option>
           </select>
+          {/* Filter efter disciplin */}
           <select
             name="disciplin"
             value={filterCriteria.disciplin}
@@ -155,6 +176,7 @@ export default function DeltagerList() {
             <option value="Højdespring">Højdespring</option>
           </select>
         </div>
+        {/* Tabelsektion */}
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-gray-800 text-white">
@@ -215,19 +237,21 @@ export default function DeltagerList() {
                     </ul>
                   </td>
                   <td className="py-3 px-4 flex space-x-2">
+                    {/* Knappen til at redigere deltager */}
                     <button
                       onClick={() => navigate(`/deltager/${deltager.id}/edit`)}
                       className="text-indigo-600 font-bold hover:underline text-sm"
                     >
                       Rediger
                     </button>
+                    {/* Knappen til at se deltagerdetaljer */}
                     <button
                       onClick={() => navigate(`/deltager/${deltager.id}`)}
                       className="text-indigo-600 font-bold hover:underline text-sm"
                     >
                       Detaljer
                     </button>
-
+                    {/* Knappen til at slette deltager */}
                     <button
                       onClick={() => handleDelete(deltager.id)}
                       className="text-red-600 font-bold hover:underline text-sm"
