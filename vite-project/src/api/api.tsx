@@ -1,3 +1,5 @@
+import { makeOptions } from "./fetchUtils";
+
 const endpoint = "http://localhost:8080";
 const deltagerURL = `${endpoint}/deltager`;
 const createDeltagerURL = `${endpoint}/createdeltager`;
@@ -12,16 +14,11 @@ export interface Disciplin {
 
 export interface Resultat {
   id: number;
-  resultatType: string | undefined;
-  resultatVaerdi: string | undefined;
-  dato: string;
-  deltager: {
-    id: number;
-  };
-  disciplin: {
-    id: number;
-  };
-  formattedResult?: string;
+  resultatType: string;
+  dato: Date;
+  resultatVaerdi: string;
+  formattedResult: string;
+  disciplin: Disciplin;
 }
 
 export interface Deltager {
@@ -32,14 +29,6 @@ export interface Deltager {
   klub: string;
   discipliner: Disciplin[];
   resultater: Resultat[];
-}
-
-export interface FormattedResult {
-  id: number;
-  formattedResult: string;
-  dato: Date;
-  deltager: Deltager;
-  disciplin: Disciplin;
 }
 async function getDeltagerList() {
   const response = await fetch(deltagerURL);
@@ -131,32 +120,30 @@ async function deleteDeltager(id: number): Promise<void> {
 }
 
 async function registerSingleResult(result: Resultat) {
-  const response = await fetch(`${endpoint}/resultat/single`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(result),
-  });
-
+  const options = makeOptions("POST", result);
+  const response = await fetch(`${endpoint}/resultat/single`, options);
+  if (!response.ok) {
+    const errorDetail = await response.json();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${JSON.stringify(
+        errorDetail
+      )}`
+    );
+  }
   return response.json();
 }
 
 async function registerMultipleResults(results: Resultat[]) {
-  const response = await fetch(`${endpoint}/resultat/multiple`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(results),
-  });
-
+  const options = makeOptions("POST", results);
+  const response = await fetch(`${endpoint}/resultat/multiple`, options);
   if (!response.ok) {
-    const text = await response.text();
-    console.error(`Error ${response.status}: ${text}`);
-    throw new Error(`Error ${response.status}: ${text}`);
+    const errorDetail = await response.json();
+    throw new Error(
+      `HTTP error! status: ${response.status}, details: ${JSON.stringify(
+        errorDetail
+      )}`
+    );
   }
-
   return response.json();
 }
 

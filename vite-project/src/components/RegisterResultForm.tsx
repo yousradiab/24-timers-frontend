@@ -6,7 +6,6 @@ import {
   Resultat,
   Deltager,
   Disciplin,
-  getDeltagerById,
 } from "../api/api";
 
 const initialResult: Resultat = {
@@ -31,14 +30,6 @@ export function RegisterResultForm() {
     setSingleResult((prevState) => ({
       ...prevState,
       [name]: value,
-      deltager:
-        name === "deltager"
-          ? { ...prevState.deltager, id: parseInt(value, 10) }
-          : prevState.deltager,
-      disciplin:
-        name === "disciplin"
-          ? { ...prevState.disciplin, id: parseInt(value, 10) }
-          : prevState.disciplin,
     }));
   };
 
@@ -49,18 +40,7 @@ export function RegisterResultForm() {
     const { name, value } = e.target;
     setMultipleResults((prevResults) => {
       const newResults = [...prevResults];
-      newResults[index] = {
-        ...newResults[index],
-        [name]: value,
-        deltager:
-          name === "deltager"
-            ? { ...newResults[index].deltager, id: parseInt(value, 10) }
-            : newResults[index].deltager,
-        disciplin:
-          name === "disciplin"
-            ? { ...newResults[index].disciplin, id: parseInt(value, 10) }
-            : newResults[index].disciplin,
-      };
+      newResults[index] = { ...newResults[index], [name]: value };
       return newResults;
     });
   };
@@ -73,77 +53,56 @@ export function RegisterResultForm() {
     e.preventDefault();
     try {
       if (isMultiple) {
+        // Ensure all results have valid deltager and disciplin objects
         const formattedMultipleResults = multipleResults.map((result) => ({
           ...result,
           deltager: {
-            id: result.deltager.id
+            ...result.deltager,
+            id: result.deltager?.id
               ? parseInt(result.deltager.id.toString(), 10)
               : 0,
           },
           disciplin: {
-            id: result.disciplin.id
+            ...result.disciplin,
+            id: result.disciplin?.id
               ? parseInt(result.disciplin.id.toString(), 10)
               : 0,
           },
-          // Ensure `resultatType` and `resultatVaerdi` are present
-          resultatType: result.resultatType || "Point",
-          resultatVaerdi: result.resultatVaerdi || result.formattedResult,
         }));
         console.log("Registering multiple results:", formattedMultipleResults);
         await registerMultipleResults(formattedMultipleResults);
       } else {
-        const resultatDeltager = await getDeltagerById(
-          singleResult.deltager.id
-        );
-        console.log("Deltager:", resultatDeltager);
-
-        const resultatDisciplin: Disciplin | undefined =
-          resultatDeltager.discipliner.find(
-            (d) => d.id === singleResult.disciplin.id
-          );
-        console.log("Disciplin:", resultatDisciplin.resultatType);
-
+        // Ensure the single result has valid deltager and disciplin objects
         const formattedSingleResult = {
           ...singleResult,
           deltager: {
-            id: singleResult.deltager.id
+            ...singleResult.deltager,
+            id: singleResult.deltager?.id
               ? parseInt(singleResult.deltager.id.toString(), 10)
               : 0,
           },
           disciplin: {
-            id: singleResult.disciplin.id
+            ...singleResult.disciplin,
+            id: singleResult.disciplin?.id
               ? parseInt(singleResult.disciplin.id.toString(), 10)
               : 0,
           },
-          // Ensure `resultatType` and `resultatVaerdi` are present
-          resultatType: resultatDisciplin.resultatType,
-          resultatVaerdi:
-            singleResult.resultatVaerdi || singleResult.formattedResult,
         };
         console.log("Registering single result:", formattedSingleResult);
-
         await registerSingleResult(formattedSingleResult);
       }
       navigate("/deltager");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to register result(s):", error);
-
       if (error.response) {
-        // Attempt to parse JSON response
-        try {
-          const jsonResponse = await error.response.json();
-          alert(
-            `Failed to register result(s): ${
-              jsonResponse.message || JSON.stringify(jsonResponse)
-            }`
-          );
-        } catch (parseError) {
-          // If parsing fails, show raw response
-          alert(`Failed to register result(s): ${error.response.data}`);
-        }
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        alert(`Failed to register result(s): ${error.response.data}`);
       } else if (error.request) {
+        // The request was made but no response was received
         alert("No response received from the server.");
       } else {
+        // Something happened in setting up the request that triggered an Error
         alert(`Failed to register result(s): ${error.message}`);
       }
     }
@@ -242,7 +201,7 @@ export function RegisterResultForm() {
                     ...prevState,
                     deltager: {
                       ...prevState.deltager,
-                      id: parseInt(e.target.value, 10),
+                      id: parseInt(e.target.value),
                     },
                   }))
                 }
@@ -258,7 +217,7 @@ export function RegisterResultForm() {
                     ...prevState,
                     disciplin: {
                       ...prevState.disciplin,
-                      id: parseInt(e.target.value, 10),
+                      id: parseInt(e.target.value),
                     },
                   }))
                 }
