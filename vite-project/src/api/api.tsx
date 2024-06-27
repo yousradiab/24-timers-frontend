@@ -135,31 +135,13 @@ async function deleteDeltager(id: number): Promise<void> {
 }
 
 async function registerSingleResult(result: Resultat) {
-  const response = await fetch(`${endpoint}/resultat/single`, {
+  const response = await fetch(`${endpoint}/resultat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(result),
   });
-
-  return response.json();
-}
-
-async function registerMultipleResults(results: Resultat[]) {
-  const response = await fetch(`${endpoint}/resultat/multiple`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(results),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    console.error(`Error ${response.status}: ${text}`);
-    throw new Error(`Error ${response.status}: ${text}`);
-  }
 
   return response.json();
 }
@@ -171,6 +153,5 @@ export {
   updateDeltager,
   deleteDeltager,
   registerSingleResult,
-  registerMultipleResults,
   getResults,
 };
