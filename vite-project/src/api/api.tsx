@@ -121,7 +121,7 @@ async function deleteDeltager(id: number): Promise<void> {
 
 async function registerSingleResult(result: Resultat) {
   const options = makeOptions("POST", result);
-  const response = await fetch(`${endpoint}/resultat/single`, options);
+  const response = await fetch(`${endpoint}/resultat`, options);
   if (!response.ok) {
     const errorDetail = await response.json();
     throw new Error(
